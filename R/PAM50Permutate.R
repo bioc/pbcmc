@@ -80,6 +80,10 @@ setMethod(f="permutate", signature="PAM50", definition=function(object,
 
     ##Check object   
     stopifnot(nrow(exprs(object))>0)
+    if(length(classification(object)$subtype)==0){
+        stop(paste("No call to classify(object, ...) has been made yet.",
+            "Please run classify(object)."))  
+    }
     
     ##PAM50 parameters   
     pam50.aux<-genefu::pam50

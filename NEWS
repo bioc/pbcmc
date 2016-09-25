@@ -1,3 +1,47 @@
+Changes in version 1.1.1 
+----------------------------------------------------------------
+
+CODE
+
+    * `PAM50Filtrate` now supports a single sample i.e. 
+    `drop=FALSE` (Thanks to anonymous reviewer).
+    * `PAM50Classify` now Force filtrate if not already performed.
+    In addition, for `std="median"` checks for appropriate  
+    annotation i. e. EntrezGene.ID-Symbol tuples for the same 
+    EntrezGene.ID have the same Symbol (Thanks to anonymous 
+    reviewer).
+    * `PAM50Permutate` now checks for previous call to `classify`
+    (Thanks to anonymous reviewer). 
+    
+DOCUMENTATION
+
+    * The vignette has been update in order to include two additional 
+    examples (single subject and custom data) and computational 
+    requirements (e.g. memory, time) 
+    (Thanks to anonymous reviewer). 
+
+Changes in version 1.1.0 
+----------------------------------------------------------------
+
+VERSION
+
+    * Bump version after creating 3.4 devel branch 
+
+
+Changes in version 1.0.0 
+----------------------------------------------------------------
+
+VERSION
+
+    * Bump version after creating 3.3 release branch 
+
+Changes in version 0.99.6 
+----------------------------------------------------------------
+
+VERSION
+
+    * Bump versions prior to creation of 3.3 branch
+
 Changes in version 0.99.5 
 ----------------------------------------------------------------
 

@@ -71,6 +71,11 @@ setMethod(f="classify", signature="PAM50", definition=function(object,
     ##Check for standardization method 
     stopifnot(std %in% c("median", "none", "scale", "robust"))   
     stopifnot(length(std)==1)
+    ##Force filtrate if not already performed   
+    if(verbose){
+        message("Enforcing filtrate(object)...")   
+    }
+    object<-filtrate(object, verbose=verbose)   
 
     ##auxiliary pam   
     pam50.aux <- genefu::pam50  
@@ -79,6 +84,28 @@ setMethod(f="classify", signature="PAM50", definition=function(object,
     ##dataset center scale using median estimation using all subjects
     ##present.
     if(std=="median"){
+        ##Check for single subject 
+        if(ncol(exprs(object))==1){
+            stop("Not posible to use std=\"median\" for a single subject.")}
+        ##Check for appropiate annotation i. e. EntrezGene.ID-Symbol tuples 
+        ##for the same EntrezGene.ID have the same Symbol 
+        if(verbose){
+        message("Annotation check over identical EntrezGeneID probes...")}   
+        if(nrow(unique(annotation(object)[,-1])) !=   
+            length(unique(annotation(object)$EntrezGene.ID))){
+            ##Search for the wrong tuples
+            ids<-unique(annotation(object)$EntrezGene.ID[
+                duplicated(annotation(object)$EntrezGene.ID)])
+            check<-sapply(ids, function(posible){   
+                nrow(unique(annotation(object)[
+                    annotation(object)$EntrezGene.ID==posible, -1]))!=1   
+            })
+            stop(paste("Inconsistent annotation for EntrezGene.ID:", 
+                toString(ids[check]),
+                ". Different symbols are present for the same EntrezGene.ID.",
+                " Please, check and correct the annotation."))  
+        }
+                
         ##Average probes with the same EntrezGene.ID   
         if(verbose){
             message("Averaging over identical EntrezGeneID probes...")}
@@ -119,7 +146,8 @@ setMethod(f="classify", signature="PAM50", definition=function(object,
         #keep the same individuals and order   
         object@annotation<-annotation(object)[
             row.names(annotation(object)) %in% row.names(exprs(object)), ]     
-        object@exprs<-exprs(object)[order(row.names(exprs(object))), ]   
+        object@exprs<-exprs(object)[order(row.names(exprs(object))),
+            ,drop=FALSE]    
         object@annotation<-annotation(object)[order(
             row.names(annotation(object))), ]   
         stopifnot(validObject(object))

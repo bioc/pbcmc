@@ -226,7 +226,7 @@ setMethod(f="subjectReport", signature="PAM50", definition=function(object,
 #             ncol=1, rel_heights=c(1, 2, 0.3))
         grid.arrange(t1, p, t2, ncol=1, nrow=3, heights=c(1, 2, 0.2))     
         ##fill the 6x6 hole with the permutation boxplot 
-        vp<-viewport(width=1/3-0.009, height=1/3, x=1-1/3+0.009, y=0.2, 
+        vp<-viewport(width=1/3-0.009, height=0.3, x=1-1/3+0.009, y=0.25, 
             just="left")
         print(p2, vp = vp) 
 #         vp<-viewport(width=1/3-0.009, height=1/2.5,  

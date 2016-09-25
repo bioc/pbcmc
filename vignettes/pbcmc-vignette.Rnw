@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{enumerate}
+\usepackage{multirow}
 \DeclareMathOperator*{\argmax}{arg\,max}
 % \VignetteIndexEntry{PermutationBased Confidence for Molecular Class}   
 % \VignetteKeyword{PAM50}   
@@ -56,7 +57,7 @@ Crist\'{o}bal Fresno, Germ\'{a}n A Gonz\'{a}lez \& Elmer A Fern\'{a}ndez\\
 Bioscience Data Mining Group\\ 
 Facultad de Ingenier\'{i}a\\  
 Universidad Cat\'{o}lica de C\'{o}rdoba - CONICET\\   
-X5016DHK Córdoba, Argentina\\  
+X5016DHK C\'{o}rdoba, Argentina\\  
 E-mail: \email{cfresno@bdmg.com.ar, ggonzalez@bdmg.com.ar, \\ 
 efernandez@bdmg.com.ar}\\
 URL: \url{http://www.bdmg.com.ar/}\\   
@@ -64,7 +65,7 @@ $~$\\
 Andrea S Llera\\  
 Laboratorio de Terapia Molecular y Celular\\   
 Fundaci\'{o}n Instituto Leloir - CONICET\\
-C1405BWE Ciudad Autónoma de Buenos Aires, Argentina\\  
+C1405BWE Ciudad Aut\'{o}noma de Buenos Aires, Argentina\\  
 E-mail: \email{allera@leloir.org.ar}\\   
 URL: \url{http://www.leloir.org.ar/podhajcer/}   
 }
@@ -140,7 +141,7 @@ or are even negative.
 \subsection{Alternative proposal}   
 
 In order to overcome these drawbacks, here a simple and reliable single 
-subject classifier to control type I and II errors is proposed. Morevover, it
+subject classifier to control type I and II errors is proposed. Moreover, it
 provides a statistical significance on subtype assignation based on a gene  
 label permutation test. Briefly, it evaluates if the observed  $\rho$ of each
 IGP can be achieved by chance, regarding subject observed MS expressed gene 
@@ -150,6 +151,7 @@ currently available in the market. The method is presented for PAM50 but can
 easily be extended to other MS algorithms.  
 
 \section{Methods}
+\label{sec:methods}
 
 The Permutation Based Confidence for Molecular Classification (\pkg{pbcmc}) 
 package, estimates the statistical significance of $\rho$ for each IGP. In  
@@ -201,7 +203,7 @@ The S4 class hierarchy of the \pkg{pbcmc} package is based on the
 implementation of an abstract \texttt{MolecularPermutationClassifier} class,   
 which can  potentially be used for any MS as depicted in Figure
 \ref{fig:hierarchy}. Basically, it has been developed as an organized data   
-processing framework for its heirs. The formers are supposed to implement the 
+processing framework for its heirs. The latters are supposed to implement the 
 respective responsibilities. Once a heir object is implemented the user can:  
 
 \begin{figure}
@@ -245,12 +247,121 @@ Prosigna\textregistered ~\citep{nielsen2014} or others, just implementing
 \texttt{filtrate}, \texttt{classify}, \texttt{permutate}, \texttt{subtype}, 
 \texttt{subjectReport} and \texttt{databaseReport} functions. 
 
-\subsection{Example}
+\subsection{Computational Requirements}   
 
+The \pkg{pbcmc} uses permutation approach as described in section
+\ref{sec:methods}. In this context, a parallelization approach by sample has   
+been implemented using \pkg{BiocParallel} for the recommended parameters 
+i.e., ``\texttt{nPerm=10000}'', ``\texttt{pCutoff=0.01}'',  
+``\texttt{where="fdr"} and ``\texttt{corCutoff=0.1}''. Hence, it can   
+work in any platform providing the appropriate  
+``\texttt{BPPARAM=bpparam()}'' option according to the    
+operating system e.g. \texttt{SnowParam()} for Windows or  
+\texttt{MulticoreParam()} in Linux. It worth to mention that this feature   
+will not be used when working with a single sample.   
+
+Computational requirement for memory (Table \ref{table:memory})   
+and time execution (Table \ref{table:time} and Fig. \ref{fig:speedup}) 
+tested in a Kubuntu 16.04.1 LTS xenial machine, with an Intel(R)  
+Core(TM) i7-4790 CPU \@ 3.60GHz (8 cores), 32 GB
+DDR3 1866 MHz using the complete \pkg{breastCancerNKI}  
+example for recommended parameters were:
+
+\begin{table}[!htpb]
+    \caption{Memory requirements for \pkg{pbcmc} package using   
+        \pkg{breastCancerNKI}}
+    \centering
+    \begin{tabular}{lr}
+    Process performed & Total object memory size\\  
+    \hline    
+    Raw data ($24481 \times 337$)  & 72.9 Mb\\    
+    Filtered data ($57 \times 337$)& 263 Kb\\  
+    Classify with \texttt{std="median"} option & 324.3 Kb\\  
+    Permutate with \texttt{keep=FALSE} option & 416.3 Kb\\  
+    Permutate with \texttt{keep=TRUE} option &  129.2 Mb\\ 
+    \hline
+    Temporary \texttt{MulticoreParam(workers=7)} & 2GB of free memory \\ 
+    \hline
+    \end{tabular}
+    \label{table:memory}
+\end{table}
+
+It is worth to mention that extra memory requirements for \pkg{BiocParallel}  
+will only be used while computing the permutations and released afterwards.  
+For ``\texttt{nki}'' dataset using \texttt{MulticoreParam(workers=7)}
+(Table \ref{table:memory}) it requires of 2GB of RAM memory. If additional  
+workers are included, if available, it would require additional free memory.  
+
+\begin{table}[!htpb]
+    \caption{Time execution requirements for \pkg{pbcmc} package using  
+        \pkg{breastCancerNKI}}
+    \centering
+    \begin{tabular}{rrrrrrr}
+    \multirow{2}{*}{Type} & \multicolumn{3}{c}{Time(seconds)}&  
+        \multirow{2}{*}{Cores} & \multirow{2}{*}{Speed up} \\
+            & User & System & Elapsed\\   
+    \hline
+    \multirow{2}{*}{Single sample} & 2.440 & 0.072 & 2.515 & 1 &  
+    \multirow{2}{*}{1.00}\\
+        & 2.440 & 0.072 & 2.515 & 7\\ 
+    \hline
+    \multirow{7}{*}{NKI} & 0.576&   0.132& 253.011& 7& 3.35\\
+&   0.624&   0.152& 276.524& 6& 3.07\\   
+&   0.780&   0.388& 285.937& 5& 2.97\\   
+&   0.348&   0.276& 303.965& 4& 2.79\\   
+&   0.416&   0.204& 313.045& 3& 2.71\\   
+&   0.488&   0.144& 449.414& 2& 1.89\\   
+& 830.980&  17.924& 848.911& 1& 1.00\\  
+\hline
+    \end{tabular}
+    \label{table:time}
+\end{table}
+
+The time execution (Table \ref{table:time} and Fig. \ref{fig:speedup}) 
+shows that the algorithm takes advantage of the sample parallel   
+implementation where fore two and three cores almost achieves the theoretical  
+identity speed up line. Nevertheless, the extra memory requirement    
+provides a time reduction as depicted in both Table \ref{table:time}   
+and Fig. \ref{fig:speedup}.  
+
+\begin{figure}
+\centering
+<<Speedup, echo=FALSE, hide=TRUE, fig=TRUE, width=3, height=3>>=   
+texec<-matrix(ncol=2, nrow=7, byrow=TRUE,  
+c(7,3.35,
+    6,3.07,
+    5,2.97,
+    4,2.79,
+    3,2.71,
+    2,1.89,
+    1,1.00))
+
+colnames(texec)<-c("Cores", "SpeedUp")   
+texec<-as.data.frame(texec)
+
+library("ggplot2")
+p<-ggplot(data=texec, aes(x=Cores, y=SpeedUp))+  
+        geom_point(size=2)+geom_abline(slope=1,intercept=0)+
+        # geom_smooth(se=FALSE)+   
+        geom_line(color="blue", linetype="dashed")+   
+        ylab("Speed Up")+xlab("Number of cores")+ 
+        theme_bw()
+p            
+@
+\caption{Time execution speed up for \pkg{breastCancerNKI} dataset.}  
+\label{fig:speedup}
+\end{figure}
+
+\clearpage    
+
+\section{Examples}
+
+\subsection{Using Bioconductor's breastCancerXXX dataset} 
+\label{sec:nki}
 In order to work with \texttt{PAM50} MS, the user must load a Bioconductor's    
-breast cancer dataset. For example we can load NKI database   
-\citep{breastCancerNKI}, provided that the require library is installed, 
-using the following code: 
+breastCancerXXX dataset where XXX stands for UPP, NKI, VDX, TRANSBIG,   
+MAINZ or UNT. For example we can load NKI database \citep{breastCancerNKI},  
+provided that the require library is installed, using the following code:  
 <<General options for R, echo=false, results=hide>>=   
 options(prompt="R> ", continue="+  ", width=70, useFancyQuotes=FALSE, digits=4) 
 suppressMessages(library("pbcmc"))
@@ -276,10 +387,60 @@ only need:
     \item The \textbf{annotation} \texttt{data.frame} which must include the 
         compulsory fields: ``\texttt{probe}'', \\ ``\texttt{NCBI.gene.symbol}''
         and ``\texttt{EntrezGene.ID}''.   
+    \item The \textbf{targets} \texttt{data.frame} which is an optional slot.
+        If it is provided, it should contain as many rows as samples present    
+        in the \texttt{M} gene expression object. The idea is to include as 
+        many columns as clinical or experimental data these samples have   
+        available. For ``\texttt{nki}'' example, there are 21 columns. 
 \end{enumerate}
 
+\subsection{Using any microarray R data package}   
+
+The same example of section \ref{sec:nki} can be built with \pkg{pbcmc}  
+directly loading the package and extracting the data into the \texttt{M},  
+\texttt{annotation} and \texttt{targets} (optional) slots required by  
+\texttt{PAM50} object. Just for simplicity we will work with the first  
+five samples but, it also works for a single sample.   
+
+<<PAM50 with microarray data>>= 
+library("breastCancerNKI")
+data("nki")
+@
+
+<<PAM50 with microarray data2>>= 
+##The expresion   
+M<-exprs(nki)[, 1:5, drop=FALSE]  
+head(M)
+
+##The annotation   
+genes<-fData(nki)[, c("probe", "NCBI.gene.symbol", "EntrezGene.ID")] 
+head(genes)
+
+##Additional information (optional)  
+targets<-pData(nki)[1:5, ,drop=FALSE]   
+head(targets)
+@
+
+Now we are ready to follow the workflow of section \ref{sec:proof}, i. e.:
+\begin{enumerate}
+    \item \textbf{filtrate} the genes to keep only the required 50 genes  
+        by PAM50.   
+    \item \textbf{classify} the sample/s using \pkg{genefu} implementation  
+        of PAM50 algorithm with the desired gene normalization: none, scale,   
+        robust or median. For single samples use none but, we recommend  
+        ``median'' for population approaches. 
+    \item \textbf{permutate} the gene labels to build the null distribution   
+        and generate the uncertainty estimation proposed in \pkg{pbcmc}. 
+\end{enumerate}    
+
+and further explore the obtained results with \texttt{summary}, 
+\texttt{subjectReport} and \texttt{databaseReport}.  
+
+\subsection{Using PAM50 centroids as proof of concept}  
+\label{sec:proof}
+
 For example, we could use \pkg{genefu}'s PAM50 centroids to check if our 
-implementation solves the proof of concept, where we \emph{a priori} know the 
+implementation solves the proof of concept, where we \emph{a prior} know the 
 true class of each subject:
 
 <<PAM50 with own data>>= 
@@ -298,6 +459,11 @@ to explore the slots content, to see whether they have been correctly loaded:
 
 <<Exploring the slots>>=  
 head(exprs(object))      ##The gene expression values for each subject
+@
+
+\newpage
+
+<<Exploring the slots2>>=  
 head(annotation(object)) ##The compulsory annotation fields
 head(targets(object))    ##The clinical data, if available.
 @
@@ -362,6 +528,8 @@ whereas not assigned (\textbf{NA}) marginal row/column contains only zeros
 (0). If ambiguous (\textbf{AMB}) subjects would have been found,
 \emph{Classes} column will have included additional rows with 
 the classes in dispute (e. g., ``LumA, Normal'' or ``Her2, LumB'', etc.). 
+
+\newpage
 
 <<Summary>>=
 summary(object)
@@ -431,13 +599,15 @@ contingency table of the permuted test classes against the original PAM50
 subtypes results. The following pages are the respective 
 \texttt{subjectReport} outputs as the one shown in Figure \ref{fig:report}.    
 
+\clearpage
+
 \section{Conclusion}
 The \pkg{pbcmc} package characterizes uncertainty assessment on gene 
 expression classifiers, a. k. a. molecular signatures, based on a permutation  
 test. In order to achieve this goal, synthetic simulated subjects are obtained 
-bypermutations of gene labels. Then, each synthetic subject is tested against  
-the corresponding subtype classifier to build the null distribution. Thus,   
-classification confidence measurement report can be provided for each
+by permutations of gene labels. Then, each synthetic subject is tested  
+against the corresponding subtype classifier to build the null distribution.   
+Thus, classification confidence measurement report can be provided for each   
 subject, to assist physician therapy choice. At present, it is only  
 available for PAM50 implementation in \pkg{genefu} package but, it can   
 easily be extend to other molecular signatures.      

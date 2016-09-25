@@ -52,8 +52,8 @@ setMethod(f="filtrate", signature="PAM50", definition=function(object,
     if(verbose){message("Keeping only annotated EntrezGene.ID genes")}
     validIDs<-!is.na(annotation(object)$EntrezGene.ID)
     #Cannot use the setters because they check integrity, the only way is @
-    object@exprs<-exprs(object)[validIDs, ]   
-    object@annotation<-annotation(object)[validIDs, ]   
+    object@exprs<-exprs(object)[validIDs, , drop=FALSE]      
+    object@annotation<-annotation(object)[validIDs, , drop=FALSE]      
     stopifnot(validObject(object))#Check if the subset is valid   
     
 
@@ -62,8 +62,8 @@ setMethod(f="filtrate", signature="PAM50", definition=function(object,
     if(verbose){message("Keeping only PAM50 available genes.")}
     validIDs<-annotation(object)$EntrezGene.ID %in%   
     genefu::pam50$centroids.map$EntrezGene.ID
-    object@exprs<-exprs(object)[validIDs, ]   
-    object@annotation<-annotation(object)[validIDs, ]   
+    object@exprs<-exprs(object)[validIDs, , drop=FALSE]      
+    object@annotation<-annotation(object)[validIDs, , drop=FALSE]      
 
     ##Configuration of the annotation table for "genefu" functions. 
     annotation(object)<-annotation(object)[, c("probe", "EntrezGene.ID",  
