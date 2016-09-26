@@ -100,7 +100,7 @@ subject outcome. Hence, the development of methods for significance or
 certainty on MS class assignation is crucial in order to assist physicians’ 
 decision making \citep{wu2012, ebbert2011}. 
 
-\subsection{PAM50 Molecular Siganture}  
+\subsection{PAM50 Molecular Signature}  
 The well-known breast cancer (BC) MS, PAM50 \citep{perou2000, perou2010},    
 is based on the comparison between the patient gene profiles (PGP) of 50
 expressed genes, against five intrinsic genes profiles (IGP) representing:
@@ -408,7 +408,7 @@ data("nki")
 @
 
 <<PAM50 with microarray data2>>= 
-##The expresion   
+##The expression   
 M<-exprs(nki)[, 1:5, drop=FALSE]  
 head(M)
 
