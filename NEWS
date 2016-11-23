@@ -1,3 +1,19 @@
+Changes in version 1.2.1 
+----------------------------------------------------------------
+
+CODE
+
+    *`subjectReport` bug removed over axis.text.x duplicated   
+    parameter.
+
+
+Changes in version 1.2.0 
+----------------------------------------------------------------
+
+VERSION
+
+    * Bump version after creating 3.4 release branch 
+    
 Changes in version 1.1.1 
 ----------------------------------------------------------------
 

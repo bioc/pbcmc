@@ -207,7 +207,6 @@ setMethod(f="subjectReport", signature="PAM50", definition=function(object,
     pblank<-pblank+xlim(-2,2)+ylim(0,2)
     pblank<-pblank+xlab("")+ylab("")
     pblank<-pblank+theme(axis.ticks=element_blank(),    
-        axis.text.y=element_blank(), axis.text.x=element_blank(),   
         axis.text.x=element_blank(),axis.text.y=element_blank(),
         panel.grid.major = element_blank(),  
         panel.grid.minor = element_blank(),  
@@ -255,7 +254,6 @@ setMethod(f="databaseReport", signature="PAM50", definition=function(object,
     pblank<-pblank+xlim(-2,2)+ylim(0,2)
     pblank<-pblank+xlab("")+ylab("")
     pblank<-pblank+theme(axis.ticks=element_blank(),    
-        axis.text.y=element_blank(), axis.text.x=element_blank(),   
         axis.text.x=element_blank(),axis.text.y=element_blank(),
         panel.grid.major = element_blank(),  
         panel.grid.minor = element_blank(),  
