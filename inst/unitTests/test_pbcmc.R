@@ -274,11 +274,11 @@ test_summary<-function(){
 test_subjectReport<-function(){
     data(pam50centroids)
     report<-subjectReport(pam50centroids, subject=1)   
-    checkEquals(names(report), c("data", "panel", "plot"), 
+    checkEquals(names(report), c("data", "layout", "plot"), 
         msg="subjectReport names check: OK.") 
     checkEquals(class(report$data), "list",   
         msg="subjectReport data class: OK.") 
-    checkEquals(class(report$panel), "panel",   
+    checkEquals(class(report$layout), c("Layout", "ggproto"),  
         msg="subjectReport panel class: OK.") 
     checkEquals(class(report$plot), c("gg", "ggplot"),  
         msg="subjectReport plot class: OK.") 
