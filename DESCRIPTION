@@ -1,7 +1,7 @@
 Package: pbcmc   
 Type: Package   
 Title: Permutation-Based Confidence for Molecular Classification   
-Version: 1.10.0
+Version: 1.11.0
 Date: 2016-09-23   
 Author: Cristobal Fresno, German A. Gonzalez, Andrea S. Llera and Elmer  
         A. Fernandez   
