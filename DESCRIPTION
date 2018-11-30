@@ -1,7 +1,7 @@
 Package: pbcmc   
 Type: Package   
 Title: Permutation-Based Confidence for Molecular Classification   
-Version: 1.10.0
+Version: 1.10.1
 Date: 2016-09-23   
 Author: Cristobal Fresno, German A. Gonzalez, Andrea S. Llera and Elmer  
         A. Fernandez   
@@ -36,7 +36,7 @@ Collate: 'pbcmcPackage.R' 'MolecularPermutationClassifierClass.R'
         'MolecularPermutationClassifierShow.R' 'PAM50Class.R'   
         'PAM50Classify.R' 'PAM50Constructor.R' 'PAM50Filtrate.R'  
         'PAM50Permutate.R' 'PAM50Report.R' 'PAM50Subtype.R'  
-        'pbcmcData.R'
+        'pbcmcData.R' 'zzz.R'
 RoxygenNote: 5.0.1   
 NeedsCompilation: no   
 PackageStatus: Deprecated
